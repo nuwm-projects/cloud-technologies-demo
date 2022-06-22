@@ -1,5 +1,5 @@
 <template>
-  <Tutorial/>
+  <Counter/>
 </template>
 
 <script>
