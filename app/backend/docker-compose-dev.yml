@@ -1,0 +1,26 @@
+version: "3.8"
+
+services:
+  app:
+    build: .
+    volumes:
+      - ./src:/var/www/app
+    ports:
+      - "8888:80"
+    depends_on:
+      - db
+    platform: linux/amd64 # need for correct run on macbook with m1
+
+  db:
+    image: mysql:8.0
+    volumes:
+      - mysqldata:/var/lib/mysql
+    environment:
+      MYSQL_ROOT_PASSWORD: q1w2e3r4t5
+      MYSQL_DATABASE: test_site
+      MYSQL_USER: test_site
+      MYSQL_PASSWORD: password
+    platform: linux/amd64 # need for correct run on macbook with m1
+
+volumes:
+  mysqldata:

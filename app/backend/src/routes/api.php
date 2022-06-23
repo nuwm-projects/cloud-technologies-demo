@@ -15,5 +15,5 @@ use Illuminate\Support\Facades\Route;
 */
 
 Route::get('/counter', [CounterController::class, 'index']);
-Route::put('/counter', [CounterController::class, 'update']);
+Route::post('/counter', [CounterController::class, 'update']);
 

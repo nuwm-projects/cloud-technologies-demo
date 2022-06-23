@@ -37,7 +37,7 @@ class CounterController extends BaseController
             $record = new Counter();
         }
 
-        $record->count += $request->input('count');
+        $record->count += $request->json('count', 0);
 
         return response()->json([
             'result' => $record->save(),
