@@ -17,6 +17,8 @@
 </template>
 
 <script>
+import apiConfig from '@/api/url.json'
+
 export default {
     name: 'Counter',
     data() {
@@ -25,17 +27,18 @@ export default {
         }
     },
     mounted() {
-        this.$axios.get('/counter')
+        this.$axios.get(apiConfig.url + '/api/counter')
             .then((response) => {
-                this.counter = response.counter;
+                console.log(response)
+                this.counter = response.data.count;
             });
     },
     methods: {
         async plus() {
             this.counter++;
 
-             await this.$axios.put('/counter', {
-                counter: this.counter,
+            await this.$axios.post(apiConfig.url + '/api/counter', {
+                count: 1,
             })
         },
     }
