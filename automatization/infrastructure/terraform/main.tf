@@ -18,6 +18,10 @@ provider "aws" {
 
 provider "cloudflare" {}
 
+variable "cloudflare_zone_id" {
+  type = string
+}
+
 # Configure networking
 resource "aws_vpc" "counter-app-vpc" {
   cidr_block           = "10.50.0.0/16"
@@ -138,5 +142,13 @@ resource "aws_instance" "wp-server" {
 # Create S3 bucket for static content
 
 # Create DNS record for API service
+resource "cloudflare_record" "api-dns-record" {
+  zone_id = var.cloudflare_zone_id
+  name    = "api-stage-counter"
+  value   = aws_instance.wp-server.public_ip
+  type    = "A"
+  ttl     = 1
+  proxied = true
+}
 
 # Create DNS record for front end service
