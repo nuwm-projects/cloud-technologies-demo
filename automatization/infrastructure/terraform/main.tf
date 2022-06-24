@@ -4,6 +4,11 @@ terraform {
       source  = "hashicorp/aws"
       version = "~> 3.0"
     }
+
+    cloudflare = {
+      source  = "cloudflare/cloudflare"
+      version = "~> 3.0"
+    }
   }
 }
 
@@ -11,6 +16,9 @@ provider "aws" {
   region = "eu-north-1"
 }
 
+provider "cloudflare" {}
+
+# Configure networking
 resource "aws_vpc" "counter-app-vpc" {
   cidr_block           = "10.50.0.0/16"
   enable_dns_hostnames = true
@@ -45,6 +53,7 @@ resource "aws_route_table_association" "subnet-association" {
   route_table_id = aws_route_table.counter-app-routing.id
 }
 
+# Configure firewall
 resource "aws_security_group" "counter-app-security" {
   name        = "counter-app-security"
   description = "counter-app-security"
@@ -78,6 +87,7 @@ resource "aws_security_group" "counter-app-security" {
   }
 }
 
+# Create instance
 data "aws_ami" "ubuntu" {
   most_recent = true
 
@@ -124,3 +134,9 @@ resource "aws_instance" "wp-server" {
     aws_security_group.counter-app-security.id
   ]
 }
+
+# Create S3 bucket for static content
+
+# Create DNS record for API service
+
+# Create DNS record for front end service
