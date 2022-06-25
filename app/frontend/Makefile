@@ -10,6 +10,7 @@ dev:
 build:
 	echo "{\"url\": \"$(url)\"}" > ./api/url.json
 	npm run build
+	npm run generate
 
 test:
 	npm run test

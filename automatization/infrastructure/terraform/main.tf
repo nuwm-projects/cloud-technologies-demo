@@ -12,15 +12,25 @@ terraform {
   }
 }
 
-provider "aws" {
-  region = "eu-north-1"
-}
-
-provider "cloudflare" {}
-
 variable "cloudflare_zone_id" {
   type = string
 }
+
+variable "domain_name" {
+  type = string
+  default = "stage-counter.my-services.com.ua"
+}
+
+variable "aws_region" {
+  type = string
+  default = "eu-north-1"
+}
+
+provider "aws" {
+  region = var.aws_region
+}
+
+provider "cloudflare" {}
 
 # Configure networking
 resource "aws_vpc" "counter-app-vpc" {
@@ -140,6 +150,45 @@ resource "aws_instance" "wp-server" {
 }
 
 # Create S3 bucket for static content
+data "aws_iam_policy_document" "counter-bucket-policy" {
+  statement {
+    actions = [
+      "s3:GetObject"
+    ]
+    principals {
+      identifiers = ["*"]
+      type = "AWS"
+    }
+    resources = [
+      "arn:aws:s3:::${var.domain_name}/*"
+    ]
+  }
+}
+
+resource "aws_s3_bucket" "counter-bucket" {
+  bucket = var.domain_name
+}
+
+resource "aws_s3_bucket_policy" "allow-access-for-web-site-files" {
+  bucket = aws_s3_bucket.counter-bucket.id
+  policy = data.aws_iam_policy_document.counter-bucket-policy.json
+}
+
+resource "aws_s3_bucket_website_configuration" "counter-website-config" {
+  bucket = aws_s3_bucket.counter-bucket.bucket
+
+  index_document {
+    suffix = "index.html"
+  }
+
+  error_document {
+    key = "error.html"
+  }
+}
+
+output "website_domain" {
+  value = aws_s3_bucket.counter-bucket.website_domain
+}
 
 # Create DNS record for API service
 resource "cloudflare_record" "api-dns-record" {
@@ -152,3 +201,11 @@ resource "cloudflare_record" "api-dns-record" {
 }
 
 # Create DNS record for front end service
+resource "cloudflare_record" "front-dns-record" {
+  zone_id = var.cloudflare_zone_id
+  name    = "stage-counter"
+  value   = "${var.domain_name}.s3-website.${var.aws_region}.amazonaws.com"
+  type    = "CNAME"
+  ttl     = 1
+  proxied = true
+}
