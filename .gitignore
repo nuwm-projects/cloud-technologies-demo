@@ -1,2 +1,4 @@
 .idea
 .DS_Store
+app/frontend/api/url.json
+app/frontend/dist.tar.gz
