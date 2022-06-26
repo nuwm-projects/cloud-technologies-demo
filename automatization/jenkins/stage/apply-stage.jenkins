@@ -45,7 +45,7 @@ pipeline {
                             script {
                                 sh 'npm install'
                                 sh 'npm run test'
-                                archiveArtifacts allowEmptyArchive: true, artifacts: '/var/builds/cloud-technologies-demo/app/frontend/test-report.html'
+                                archiveArtifacts allowEmptyArchive: true, artifacts: 'test-report.html'
                             }
                         }
                     }
@@ -57,7 +57,7 @@ pipeline {
                                 sh 'cp .env.example .env'
                                 sh 'composer install'
                                 sh './artisan test --testdox-html ./tests/_results/result-backend.html'
-                                archiveArtifacts allowEmptyArchive: true, artifacts: '/var/builds/cloud-technologies-demo/app/backend/src/tests/_results/result-backend.html'
+                                archiveArtifacts allowEmptyArchive: true, artifacts: 'tests/_results/result-backend.html'
                             }
                         }
                     }
@@ -71,7 +71,7 @@ pipeline {
                         dir("/var/builds/cloud-technologies-demo/app/frontend") {
                             script {
                                 sh 'make build'
-                                archiveArtifacts allowEmptyArchive: true, artifacts: '/var/builds/cloud-technologies-demo/app/frontend/dist'
+                                archiveArtifacts allowEmptyArchive: true, artifacts: 'dist/**'
                             }
                         }
                     }
