@@ -186,10 +186,6 @@ resource "aws_s3_bucket_website_configuration" "counter-website-config" {
   }
 }
 
-output "website_domain" {
-  value = aws_s3_bucket.counter-bucket.website_domain
-}
-
 # Create DNS record for API service
 resource "cloudflare_record" "api-dns-record" {
   zone_id = var.cloudflare_zone_id

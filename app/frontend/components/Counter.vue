@@ -7,7 +7,7 @@
             class="mb-2"
         >
 
-            <b-card-text>
+            <b-card-text class="counter-number">
                 {{ counter }}
             </b-card-text>
 
@@ -29,7 +29,6 @@ export default {
     mounted() {
         this.$axios.get(apiConfig.url + '/api/counter')
             .then((response) => {
-                console.log(response)
                 this.counter = response.data.count;
             });
     },

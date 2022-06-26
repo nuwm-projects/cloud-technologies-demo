@@ -11,6 +11,7 @@ class ExampleTest extends TestCase
      * A basic test example.
      *
      * @return void
+     * @scip
      */
     public function test_example()
     {
