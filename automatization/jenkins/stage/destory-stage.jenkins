@@ -1,0 +1,42 @@
+#!groovy
+properties([
+        disableConcurrentBuilds(),
+        pipelineTriggers()
+])
+
+pipeline {
+    agent {
+        label 'cloud-tech'
+    }
+    options {
+        buildDiscarder(logRotator(numToKeepStr: '10', artifactNumToKeepStr: '10'))
+        timestamps()
+    }
+    stages {
+        stage("Stop application") {
+            steps {
+                dir("/var/builds/cloud-technologies-demo/app/frontend") {
+                    script {
+                        sh 'aws s3 rm --recursive s3://stage-counter.my-services.com.ua/'
+                    }
+                }
+                dir("/var/builds/cloud-technologies-demo/automatization/infrastructure/terraform") {
+                    script {
+                        sh 'terraform destroy -auto-approve'
+                        sh 'git add terraform.tfstate* && git commit -m "BOTDEPLOY" && git push'
+                    }
+                }
+            }
+        }
+    }
+    post {
+        always {
+            discordSend description: "Application for testing deployment \n" + "Result: " + currentBuild.currentResult,
+                    footer: "",
+                    link: env.BUILD_URL,
+                    result: currentBuild.currentResult,
+                    title: JOB_NAME,
+                    webhookURL: "https://discord.com/api/webhooks/867719036569124884/ToAPbjqpdmy-OYSCd2DCXHxslZ7nmd5WhF62F51gvtAYgqPo3HwHofq3sns7EPQEORvd"
+        }
+    }
+}

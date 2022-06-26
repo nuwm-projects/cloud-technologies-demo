@@ -6,12 +6,13 @@ properties([
                         genericVariables: [
                                 [key: 'ref', value: '$.ref'],
                                 [key: 'ref_type', value: '$.ref_type'],
+                                [key: 'message', value: '$.head_commit.message'],
                         ],
                         printContributedVariables: true,
                         printPostContent: true,
                         token: '54hcQxRJSv3yJAry4CztBKKDP2fAjzViKQ7SvLvG',
-                        regexpFilterText: '$ref_type',
-                        regexpFilterExpression: "tag"
+                         regexpFilterText: '$message',
+                        regexpFilterExpression: "^(?!.*BOTDEPLOY).*",
                 )
         ])
 ])
@@ -70,7 +71,7 @@ pipeline {
                     steps {
                         dir("/var/builds/cloud-technologies-demo/app/frontend") {
                             script {
-                                sh 'make build'
+                                sh 'make build url=https://stage-counter.my-services.com.ua'
                                 sh 'tar -czvf ./dist.tar.gz ./dist/'
                                 archiveArtifacts allowEmptyArchive: true, artifacts: 'dist.tar.gz'
                             }
@@ -92,14 +93,14 @@ pipeline {
             steps {
                 dir("/var/builds/cloud-technologies-demo/automatization/infrastructure/terraform") {
                     script {
-                        sh '. ./env.sh'
                         sh 'terraform init'
                         sh 'terraform apply -auto-approve'
+                        sh 'git add terraform.tfstate* && git commit -m "BOTDEPLOY" && git push'
                     }
                 }
-                dir("/var/builds/cloud-technologies-demo") {
+                dir("/var/builds/cloud-technologies-demo/app/frontend") {
                     script {
-                        sh 'echo "files"'
+                        sh 'aws s3 cp ./dist s3://stage-counter.my-services.com.ua/ --recursive'
                     }
                 }
             }
