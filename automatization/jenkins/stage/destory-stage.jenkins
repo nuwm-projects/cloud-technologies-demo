@@ -15,8 +15,9 @@ pipeline {
     stages {
         stage("Stop application") {
             steps {
-                dir("/var/builds/cloud-technologies-demo/app/frontend") {
+                dir("/var/builds/cloud-technologies-demo") {
                     script {
+                        sh 'git pull'
                         sh 'aws s3 rm --recursive s3://stage-counter.my-services.com.ua/'
                     }
                 }
