@@ -43,8 +43,6 @@ pipeline {
                     steps {
                         dir("/var/builds/cloud-technologies-demo/app/frontend") {
                             script {
-                                sh '. ~/.bashrc'
-                                sh 'npm run test'
                                 sh 'npm install'
                                 sh 'npm run test'
                                 archiveArtifacts allowEmptyArchive: true, artifacts: './test-report.html'
@@ -93,7 +91,6 @@ pipeline {
             steps {
                 dir("/var/builds/cloud-technologies-demo/automatization/infrastructure/terraform") {
                     script {
-                        sh '. ~/.bashrc'
                         sh '. env.sh'
                         sh 'terraform init'
                         sh 'terraform apply -auto-approve'
