@@ -70,7 +70,7 @@ pipeline {
                     steps {
                         dir("/var/builds/cloud-technologies-demo/app/frontend") {
                             script {
-                                sh 'make build url=https://stage-counter.my-services.com.ua'
+                                sh 'make build url=https://api-stage-counter.my-services.com.ua'
                                 sh 'tar -czvf ./dist.tar.gz ./dist/'
                                 archiveArtifacts allowEmptyArchive: true, artifacts: 'dist.tar.gz'
                             }
