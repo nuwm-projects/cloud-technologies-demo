@@ -27,10 +27,6 @@ pipeline {
     }
     stages {
         stage("Clone code from GitHub") {
-            if (commit_message == 'BOTDEPLOY') {
-                echo 'Deploying stopped by commit message'
-                return;
-            }
             steps {
                 dir("/var/builds/cloud-technologies-demo") {
                     script {

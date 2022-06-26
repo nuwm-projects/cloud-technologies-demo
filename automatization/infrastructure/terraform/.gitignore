@@ -2,3 +2,4 @@
 env.sh
 .terraform*
 env.properties
+terraform.tfstate*
