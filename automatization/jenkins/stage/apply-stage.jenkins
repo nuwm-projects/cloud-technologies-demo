@@ -6,12 +6,12 @@ properties([
                         genericVariables: [
                                 [key: 'ref', value: '$.ref'],
                                 [key: 'ref_type', value: '$.ref_type'],
-                                [key: 'message', value: '$.head_commit.message'],
+                                [key: 'commit_message', value: '$.head_commit.message'],
                         ],
                         printContributedVariables: true,
                         printPostContent: true,
                         token: '54hcQxRJSv3yJAry4CztBKKDP2fAjzViKQ7SvLvG',
-                        regexpFilterText: '$message',
+                        regexpFilterText: '$commit_message',
                         regexpFilterExpression: "^(?!.*BOTDEPLOY).*",
                 )
         ])
@@ -30,8 +30,6 @@ pipeline {
             steps {
                 dir("/var/builds/cloud-technologies-demo") {
                     script {
-                        echo message;
-                        return;
                         sh 'git checkout -- .'
                         sh 'git clean -fd'
                         sh 'git fetch'
