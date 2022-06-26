@@ -55,6 +55,7 @@ pipeline {
                     steps {
                         dir("/var/builds/cloud-technologies-demo/app/backend/src") {
                             script {
+                                sh 'cp .env.example .env'
                                 sh 'composer install'
                                 sh './artisan test --testdox-html ./tests/_results/result-backend.html'
                                 archiveArtifacts allowEmptyArchive: true, artifacts: './tests/_results/result-backend.html'
@@ -105,7 +106,7 @@ pipeline {
     }
     post {
         always {
-            discordSend description: "Car tire storage build for version: " + ref + "\n" + "Result: " + currentBuild.currentResult,
+            discordSend description: "Application for testing deployment \n" + "Result: " + currentBuild.currentResult,
                     footer: "",
                     link: env.BUILD_URL,
                     result: currentBuild.currentResult,
