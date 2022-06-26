@@ -1,3 +1,4 @@
 .terraform
 env.sh
 .terraform*
+env.properties
