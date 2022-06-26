@@ -1,9 +1,7 @@
 #!groovy
 properties([
         disableConcurrentBuilds(),
-        parameters([
-                string(name: 'ref', description: '', 'defaultValue': '0.1-beta'),
-        ]),
+        parameters([]),
         pipelineTriggers([
                 GenericTrigger(
                         genericVariables: [
@@ -30,12 +28,12 @@ pipeline {
     stages {
         stage("Clone code from GitHub") {
             steps {
-                dir("/var/deb-builds/sklad-shina") {
+                dir("/var/builds/cloud-technologies-demo") {
                     script {
                         sh 'git checkout -- .'
                         sh 'git clean -fd'
-                        sh 'git fetch --all --tags'
-                        sh 'git checkout tags/' + ref
+                        sh 'git fetch'
+                        sh 'git checkout master'
                     }
                 }
             }
@@ -48,6 +46,7 @@ pipeline {
                             script {
                                 sh 'npm install'
                                 sh 'npm run test'
+                                archiveArtifacts allowEmptyArchive: true, artifacts: './test-report.html'
                             }
                         }
                     }
@@ -57,7 +56,8 @@ pipeline {
                         dir("/var/builds/cloud-technologies-demo/app/backend/src") {
                             script {
                                 sh 'composer install'
-                                sh './artisan test --testdox-html ./tests/_results/result.html'
+                                sh './artisan test --testdox-html ./tests/_results/result-backend.html'
+                                archiveArtifacts allowEmptyArchive: true, artifacts: './tests/_results/result-backend.html'
                             }
                         }
                     }
@@ -65,10 +65,40 @@ pipeline {
             }
         }
         stage("Build applications") {
+            parallel {
+                stage("Build frontend application") {
+                    steps {
+                        dir("/var/builds/cloud-technologies-demo/app/frontend") {
+                            script {
+                                sh 'make build'
+                                archiveArtifacts allowEmptyArchive: true, artifacts: './dist'
+                            }
+                        }
+                    }
+                }
+                stage("Build backend application") {
+                    steps {
+                        dir("/var/builds/cloud-technologies-demo/app/backend/src") {
+                            script {
+                                sh 'make build'
+                            }
+                        }
+                    }
+                }
+            }
+        }
+        stage("Deploy applications") {
             steps {
-                dir("/var/deb-builds/sklad-shina/build") {
-                    sh "php ./build.php -v '" + ref + "'"
-                    archiveArtifacts allowEmptyArchive: true, artifacts: 'building/car-tire-storage.deb'
+                dir("/var/builds/cloud-technologies-demo/automatization/infrastructure/terraform") {
+                    script {
+                        sh 'terraform init'
+                        sh 'terraform apply -auto-approve'
+                    }
+                }
+                dir("/var/builds/cloud-technologies-demo") {
+                    script {
+                        sh 'make deploy'
+                    }
                 }
             }
         }
