@@ -12,7 +12,7 @@ properties([
                         printPostContent: true,
                         token: '54hcQxRJSv3yJAry4CztBKKDP2fAjzViKQ7SvLvG',
                         regexpFilterText: '$commit_message',
-                        regexpFilterExpression: "^((?!.*BOTDEPLOY).*)$",
+                        regexpFilterExpression: "^(?!.*BOTDEPLOY).*",
                 )
         ])
 ])
