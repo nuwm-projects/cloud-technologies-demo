@@ -71,7 +71,7 @@ pipeline {
                         dir("/var/builds/cloud-technologies-demo/app/frontend") {
                             script {
                                 sh 'make build'
-                                sh 'tar -cvfz dist.tar.gz dist'
+                                sh 'tar -cvfz dist.tar.gz dist/'
                                 archiveArtifacts allowEmptyArchive: true, artifacts: 'dist.tar.gz'
                             }
                         }
