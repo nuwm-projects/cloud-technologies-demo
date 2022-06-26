@@ -78,7 +78,7 @@ pipeline {
                 }
                 stage("Build backend application") {
                     steps {
-                        dir("/var/builds/cloud-technologies-demo/app/backend/src") {
+                        dir("/var/builds/cloud-technologies-demo/app/backend") {
                             script {
                                 sh 'make build'
                             }
