@@ -92,7 +92,7 @@ pipeline {
             steps {
                 dir("/var/builds/cloud-technologies-demo/automatization/infrastructure/terraform") {
                     script {
-                        sh '. env.sh'
+                        sh '. ./env.sh'
                         sh 'terraform init'
                         sh 'terraform apply -auto-approve'
                     }
