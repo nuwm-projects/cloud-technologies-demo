@@ -24,7 +24,6 @@ pipeline {
                 dir("/var/builds/cloud-technologies-demo/automatization/infrastructure/terraform") {
                     script {
                         sh 'terraform destroy -auto-approve'
-                        sh 'git add terraform.tfstate* && git commit -m "BOTDEPLOY" && git push'
                     }
                 }
             }

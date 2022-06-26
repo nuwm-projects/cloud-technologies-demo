@@ -94,7 +94,6 @@ pipeline {
                     script {
                         sh 'terraform init'
                         sh 'terraform apply -auto-approve'
-                        sh 'git add terraform.tfstate* && git commit -m "BOTDEPLOY" && git push'
                     }
                 }
                 dir("/var/builds/cloud-technologies-demo/app/frontend") {
