@@ -1,7 +1,6 @@
 #!groovy
 properties([
         disableConcurrentBuilds(),
-        parameters([]),
         pipelineTriggers([
                 GenericTrigger(
                         genericVariables: [
