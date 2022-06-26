@@ -10,8 +10,6 @@ properties([
                         printContributedVariables: true,
                         printPostContent: true,
                         token: '54hcQxRJSv3yJAry4CztBKKDP2fAjzViKQ7SvLvG',
-                        regexpFilterText: '$ref_type',
-                        regexpFilterExpression: "tag"
                 )
         ])
 ])
