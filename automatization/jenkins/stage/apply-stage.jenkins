@@ -30,7 +30,7 @@ pipeline {
             steps {
                 dir("/var/builds/cloud-technologies-demo") {
                     script {
-                        echo $message;
+                        echo message;
                         return;
                         sh 'git checkout -- .'
                         sh 'git clean -fd'
