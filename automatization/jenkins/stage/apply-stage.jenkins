@@ -106,12 +106,14 @@ pipeline {
     }
     post {
         always {
-            discordSend description: "Application for testing deployment \n" + "Result: " + currentBuild.currentResult,
-                    footer: "",
-                    link: env.BUILD_URL,
-                    result: currentBuild.currentResult,
-                    title: JOB_NAME,
-                    webhookURL: "https://discord.com/api/webhooks/867719036569124884/ToAPbjqpdmy-OYSCd2DCXHxslZ7nmd5WhF62F51gvtAYgqPo3HwHofq3sns7EPQEORvd"
+            withCredentials([string(credentialsId: 'DISCORD_WEB_HOOK', variable: 'WEB_HOOK_ID')]) {
+                discordSend description: "Application for testing deployment \n" + "Result: " + currentBuild.currentResult,
+                        footer: "",
+                        link: env.BUILD_URL,
+                        result: currentBuild.currentResult,
+                        title: JOB_NAME,
+                        webhookURL: "https://discord.com/api/webhooks/" + WEB_HOOK_ID
+            }
         }
     }
 }
