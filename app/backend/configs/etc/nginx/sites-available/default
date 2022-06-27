@@ -5,6 +5,10 @@ server {
 
     charset utf-8;
 
+    location /metrics {
+        proxy_pass http://node-exporter:9100/metrics; # path for proxy
+    }
+
     location / {
         try_files $uri $uri/ /index.php?$query_string;
     }
