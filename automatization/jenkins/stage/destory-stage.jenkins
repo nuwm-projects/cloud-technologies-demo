@@ -12,14 +12,14 @@ pipeline {
         buildDiscarder(logRotator(numToKeepStr: '10', artifactNumToKeepStr: '10'))
         timestamps()
     }
-    withCredentials([usernamePassword(credentialsId: 'AWS_CREDENTIALS', passwordVariable: 'AWS_KEY_ID', usernameVariable: 'AWS_KEY_SECRET'), usernamePassword(credentialsId: 'CLOUDFLARE_MY_SERVICES_COM_UA', passwordVariable: 'CF_EMAIL', usernameVariable: 'CF_TOKEN'), string(credentialsId: 'CLOUDFLARE_ZONE_ID', variable: 'CLOUDFLARE_ZONE_ID')]) {
-         environment {
+    environment {
+        withCredentials([usernamePassword(credentialsId: 'AWS_CREDENTIALS', passwordVariable: 'AWS_KEY_ID', usernameVariable: 'AWS_KEY_SECRET'), usernamePassword(credentialsId: 'CLOUDFLARE_MY_SERVICES_COM_UA', passwordVariable: 'CF_EMAIL', usernameVariable: 'CF_TOKEN'), string(credentialsId: 'CLOUDFLARE_ZONE_ID', variable: 'CLOUDFLARE_ZONE_ID')]) {
             AWS_ACCESS_KEY_ID = '$AWS_KEY_ID'
             AWS_SECRET_ACCESS_KEY = '$AWS_KEY_SECRET'
             CLOUDFLARE_EMAIL = '$CF_EMAIL'
             CLOUDFLARE_API_TOKEN = 'CF_TOKEN'
             TF_VAR_cloudflare_zone_id = '$CLOUDFLARE_ZONE_ID'
-         }
+        }
     }
     stages {
         stage("Stop application") {
