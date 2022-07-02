@@ -11,6 +11,10 @@
       apt:
         name:
           - python3-docker
+    - name: Install packages
+      pip:
+        name: jsondiff
+        executable: pip3
 
     - name: Init swarm
       community.docker.docker_swarm:
