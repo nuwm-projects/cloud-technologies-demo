@@ -22,7 +22,7 @@ class CounterController extends BaseController
         }
 
         return response()->json([
-            'count' => $record->count * 10,
+            'count' => $record->count,
         ]);
     }
 
