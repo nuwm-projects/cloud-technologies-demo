@@ -52,7 +52,6 @@ pipeline {
                             script {
                                 sh 'npm install'
                                 sh 'npm run test'
-                                junit allowEmptyResults: true, testResults: 'test-report.html'
                                 archiveArtifacts allowEmptyArchive: true, artifacts: 'test-report.html'
                             }
                         }
@@ -65,7 +64,6 @@ pipeline {
                                 sh 'cp .env.example .env'
                                 sh 'composer install'
                                 sh './artisan test --testdox-html ./tests/_results/result-backend.html'
-                                junit allowEmptyResults: true, testResults: 'tests/_results/result-backend.html'
                                 archiveArtifacts allowEmptyArchive: true, artifacts: 'tests/_results/result-backend.html'
                             }
                         }
