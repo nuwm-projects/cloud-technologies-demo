@@ -118,7 +118,7 @@ data "aws_ami" "ubuntu" {
   owners = ["099720109477"]
 }
 
-resource "aws_instance" "wp-server" {
+resource "aws_instance" "app-server" {
   ami           = data.aws_ami.ubuntu.id
   instance_type = "t3.micro"
   subnet_id     = aws_subnet.counter-app-subnet.id
@@ -137,11 +137,7 @@ resource "aws_instance" "wp-server" {
     sudo usermod -aG docker ubuntu
 
     echo "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQCuz7afrniHyBq1pIolCqUf0CU/WSMkE4zzhakwcGj1+DmrrbVcFLXNcR7oZPe9hbkolZkfMHKuoz0JMG/YPxmKTSqjtTKDnvu2blVv/+ADwrpAbf8/QtKBdgug4EfPky+UmJqdvyXnsuFy6r/iqbaJyYE+862Hfhf0oWzY9KwyySUJ0sUamiPIzbj6kwTscsPd3A1euZYPf4uxdR8B98TvtoA51Vr96opaaa1051CBLxz7REjEdy2pDP0rcWXkhYe9+9Puk2KEFWIOZ0nEI5GCsgJ8MRpUs16DyMkRmCoE10Vy3bokD/dCjLIwYErhYwl4o69T9eiT7YsOeL0S8zWSSiaV7iTcJdWdgQ4nik8lX9wQNWJsnm5/gEb5ZXKkMaUQce0K1Ovt/5gYiFH+2lUYb2VySh1RrgO5vfjb9w1fN5NcKmxK5NfLK4KiaVYxN9586V0gOlTG4DIMxRENNcnM+F//thiMrZaUvAdiFsoY4O0zzgRLKilWlcvxpdtUzO0= manager@management" >> /home/ubuntu/.ssh/authorized_keys
-
-    git clone https://github.com/nuwm-projects/cloud-technologies-demo.git
-
-    cd ./cloud-technologies-demo/app/backend
-    docker compose -f docker-compose.yml up
+    echo "ssh-rsa AAAAB3NzaC1yc2EAAAADAQABAAABgQDa8jtpuR9IB8o6yjp993fSODCxoXsNaxPV4/UsksSVQK81b5L+m53eCeFaYhLAIYmCetp6ZoHy4w0Ps/rRzNEccTM7pqtiEeG15Kbr3jnPkGOyT1xyWbloPre8GM3ykbdh/HM0BNoSLsB/4zPZYj00wDZW/yCg9P1rFByLdYemRMHd6RzMDYaMSThqp3Di13RUlFSoZyr3RlSOA7smbyQdb9Ofq/u5QuoB5qaWbY4Rb2UFWEO0GcZ5zF4tJZPTqj/r8DBEizKXmC2diTpmHlUcyX3cgPvMChCkkbIsuI0ylxGmUvvR7onVuf3sWFL2tOhJQT3V73E5iWSLCPJsIBphi/SqQwbvLz39q/7kq2h1UOetYBFtKJLoJK8xpNbval9Q7vvvvNop/Za4uI7AxQUJFU18EDZ6PVkeRptaCYGleptY0Zrxc77ZlAdrncG4o6w+hE84r8cWCcVITYpxWmzSQP3kVaD5Lgl7Mfe7d87NALlVhTUY3eE2Cnqvn51GyBs= jenkins@counter-app-builder" >> /home/ubuntu/.ssh/authorized_keys
   EOF
 
   vpc_security_group_ids = [
@@ -190,7 +186,7 @@ resource "aws_s3_bucket_website_configuration" "counter-website-config" {
 resource "cloudflare_record" "api-dns-record" {
   zone_id = var.cloudflare_zone_id
   name    = "api-stage-counter"
-  value   = aws_instance.wp-server.public_ip
+  value   = aws_instance.app-server.public_ip
   type    = "A"
   ttl     = 1
   proxied = true
@@ -204,4 +200,11 @@ resource "cloudflare_record" "front-dns-record" {
   type    = "CNAME"
   ttl     = 1
   proxied = true
+}
+
+resource "local_file" "ansible_inventory" {
+  content  = templatefile("inventory.tmpl", {
+    server_ip = aws_instance.app-server.public_ip,
+  })
+  filename = "../ansible/inventory"
 }

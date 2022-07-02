@@ -1,0 +1,21 @@
+- name: Deploy app
+  hosts: application
+  gather_facts: true
+
+  tasks:
+    - name: Init swarm
+      community.docker.docker_swarm:
+        state: present
+
+    - name: Download compose file
+      get_url:
+        url: https://raw.githubusercontent.com/nuwm-projects/cloud-technologies-demo/master/app/backend/docker-compose.yml
+        dest: /home/ubuntu/docker-compose.yml
+        mode: 0666
+
+    - name: Deploy app
+      docker_stack:
+        state: present
+        name: application
+        compose:
+          - home/ubuntu/docker-compose.yml

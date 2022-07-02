@@ -33,6 +33,11 @@ pipeline {
                         sh 'terraform destroy -auto-approve'
                     }
                 }
+                dir("/var/builds/cloud-technologies-demo/automatization/infrastructure/ansible") {
+                    script {
+                        ansiblePlaybook inventory: 'inventory', playbook: 'deploy-app.yml'
+                    }
+                }
             }
         }
     }
