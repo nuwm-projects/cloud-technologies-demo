@@ -1,3 +1,5 @@
+# Need install: ansible-galaxy collection install community.docker
+
 ---
 - name: Deploy app
   hosts: application

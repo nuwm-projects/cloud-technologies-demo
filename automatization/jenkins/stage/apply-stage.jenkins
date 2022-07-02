@@ -105,6 +105,7 @@ pipeline {
                 }
                 dir("/var/builds/cloud-technologies-demo/automatization/infrastructure/ansible") {
                     script {
+                        sh 'ansible-galaxy collection install community.docker'
                         ansiblePlaybook inventory: 'inventory', playbook: 'deploy-app.yml'
                     }
                 }
