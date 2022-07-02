@@ -33,4 +33,4 @@
         state: present
         name: application
         compose:
-          - home/ubuntu/docker-compose.yml
+          - /home/ubuntu/docker-compose.yml
