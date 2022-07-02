@@ -11,6 +11,8 @@
       apt:
         name:
           - python3-docker
+          - python3-pip
+
     - name: Install packages
       pip:
         name: jsondiff
