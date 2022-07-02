@@ -6,6 +6,11 @@
   gather_facts: true
 
   tasks:
+    - name: Install debs
+      apt:
+        name:
+          - python3-docker
+
     - name: Init swarm
       community.docker.docker_swarm:
         state: present
