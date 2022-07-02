@@ -1,3 +1,4 @@
+---
 - name: Deploy app
   hosts: application
   gather_facts: true

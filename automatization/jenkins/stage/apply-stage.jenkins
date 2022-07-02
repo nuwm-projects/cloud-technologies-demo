@@ -103,6 +103,11 @@ pipeline {
                         sh 'terraform apply -auto-approve'
                     }
                 }
+                dir("/var/builds/cloud-technologies-demo/automatization/infrastructure/ansible") {
+                    script {
+                        ansiblePlaybook inventory: 'inventory', playbook: 'deploy-app.yml'
+                    }
+                }
                 dir("/var/builds/cloud-technologies-demo/app/frontend") {
                     script {
                         sh 'aws s3 cp ./dist s3://stage-counter.my-services.com.ua/ --recursive'
